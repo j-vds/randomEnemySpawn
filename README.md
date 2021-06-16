@@ -24,7 +24,8 @@ Open an issue if you have a suggestion or feedback.
 Prebuild relases can be found [here](https://github.com/J-VdS/randomEnemySpawn/releases).
 
 ### Server which isn't allowed to use the plugin
-mindustry.ru
+* mindustry.ru
+* *contact me via discord Fishbuilder#4502*
 
 ### info/help
 You can always open an issue or contact me on discord: Fishbuilder#4502
