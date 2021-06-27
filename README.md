@@ -3,7 +3,8 @@
 ### Concept
 This plugin is designed to spice up survival/attack mode. Each 2 minutes some daggers and/or flares will spawn on a random tile. So enemies can come from every direction. The amount increases linearly from now on. 
 
-*But it still requires some balencing*
+### PVP mode
+This plugin will spawn 2 sets of units if you are using PVP mode. They location will be mirrored to the center of the map.
 
 ### Terminal commands
 * `res_info` --> shows the timer and how many units will spawn next.
