@@ -30,6 +30,8 @@ public class randomEnemySpawn extends Plugin {
     int unitAmount = DEFAULTAMOUNT;
     private Timer.Task nextWave = Timer.schedule(()->{}, 0f);
 
+    boolean PVPTEST = false;
+
     boolean hardDisable = false;
 
     //register event handlers and create variables in the constructor
@@ -110,6 +112,16 @@ public class randomEnemySpawn extends Plugin {
                        hardDisable = true;
                        Log.info("<RES> disabled ...");
                        break;
+                   // testing
+                   case "dbgpvp":
+                       PVPTEST = !PVPTEST;
+                       Log.info("PVPTESTING: @", PVPTEST);
+                       return;
+                   case "spawnnow":
+                       if(wI.restTime > 1){
+                           wI.restTime = 5;
+                       }
+                       return;
                    default:
                        Log.info("<RES> Use \"res on/off\"");
                        return;
@@ -191,9 +203,9 @@ public class randomEnemySpawn extends Plugin {
         UnitType type = null; //compileError
         Tile t = posLocations.random();
         //pvp stuff
-        int xoffset = Vars.world.width() - t.centerX();
-        int yoffset = Vars.world.height() - t.centerY();
-        Tile t_pvp = Vars.world.tile((int)(Vars.world.width()/2) - xoffset, (int)(Vars.world.height()/2) - yoffset);
+        int xoffset = Vars.world.width()/2 - t.centerX();
+        int yoffset = Vars.world.height()/2 - t.centerY();
+        Tile t_pvp = Vars.world.tile((int)(Vars.world.width()/2) + xoffset, (int)(Vars.world.height()/2) + yoffset);
         int spread = 16;
         boolean onlyAir = false;
         if(Vars.world.tile(t.pos()).solid() || t.floor().isLiquid){
@@ -201,7 +213,7 @@ public class randomEnemySpawn extends Plugin {
             type = UnitTypes.flare;
         }
 
-        if(Vars.state.rules.pvp) {
+        if(Vars.state.rules.pvp || PVPTEST) {
            if (Vars.world.tile(t_pvp.pos()).solid() || t_pvp.floor().isLiquid) {
                 onlyAir = true;
                 type = UnitTypes.flare;
@@ -216,14 +228,14 @@ public class randomEnemySpawn extends Plugin {
             unit = type.create((Vars.state.rules.pvp) ? Team.all[8] :Vars.state.rules.waveTeam);
             unit.set(t.worldx() + Mathf.range(spread), t.worldy() + Mathf.range(spread));
             unit.add();
-            if(Vars.state.rules.pvp){
+            if(Vars.state.rules.pvp || PVPTEST){
                 unitpvp = type.create(Team.all[8]);
                 unitpvp.set(t_pvp.worldx() + Mathf.range(spread), t.worldy() + Mathf.range(spread));
                 unitpvp.add();
             }
         }
 
-        if(!Vars.state.rules.pvp) {
+        if(!Vars.state.rules.pvp && !PVPTEST) {
             Call.sendMessage(String.format("[orange]<RES>[] Enemies spawned at: (%d,%d)", t.centerX(), t.centerY()));
             Log.info(String.format("<RES> %d enemies spawned at (%d,%d)", amount, t.centerX(), t.centerY()));
         } else {
