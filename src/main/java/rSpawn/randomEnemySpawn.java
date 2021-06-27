@@ -197,8 +197,6 @@ public class randomEnemySpawn extends Plugin {
     }
 
     public void spawnUnits(int amount){
-        System.out.println(amount);
-        System.out.println(unitAmount);
         Unit unit, unitpvp;
         UnitType type = null; //compileError
         Tile t = posLocations.random();
