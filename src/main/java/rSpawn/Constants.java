@@ -11,7 +11,7 @@ public class Constants {
     static String HELPMSG = "[orange]RandomEnemySpawn[]\nAn amount of enemies will spawn on a random location. They will consist of daggers or flares.\n\n[sky]Made by Fishbuilder[]";
 
 
-    static int DEFAULTTIME = 90; //210
+    static int DEFAULTTIME = 180; //210
     static int DEFAULTAMOUNT = 1;
     static int DEFAULTFIRSTWAVE = 180;
     static int DEFAULTBETWEENWAVES = 30;

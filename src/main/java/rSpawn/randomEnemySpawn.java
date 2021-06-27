@@ -12,6 +12,7 @@ import arc.util.Timer;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.game.EventType.*;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.mod.Plugin;
 import mindustry.Vars;
@@ -186,26 +187,49 @@ public class randomEnemySpawn extends Plugin {
     public void spawnUnits(int amount){
         System.out.println(amount);
         System.out.println(unitAmount);
-        Unit unit;
+        Unit unit, unitpvp;
         UnitType type = null; //compileError
         Tile t = posLocations.random();
+        //pvp stuff
+        int xoffset = Vars.world.width() - t.centerX();
+        int yoffset = Vars.world.height() - t.centerY();
+        Tile t_pvp = Vars.world.tile((int)(Vars.world.width()/2) - xoffset, (int)(Vars.world.height()/2) - yoffset);
         int spread = 16;
         boolean onlyAir = false;
         if(Vars.world.tile(t.pos()).solid() || t.floor().isLiquid){
             onlyAir = true;
             type = UnitTypes.flare;
         }
+
+        if(Vars.state.rules.pvp) {
+           if (Vars.world.tile(t_pvp.pos()).solid() || t_pvp.floor().isLiquid) {
+                onlyAir = true;
+                type = UnitTypes.flare;
+            }
+        }
+
         for(int i=0; i<amount; i++){
             if(!onlyAir){
                 type = (Math.random() > 0.72)? UnitTypes.flare:UnitTypes.dagger;
             }
-            unit = type.create(Vars.state.rules.waveTeam);
+            //if pvp spawn a team that couldn't be in the editor
+            unit = type.create((Vars.state.rules.pvp) ? Team.all[8] :Vars.state.rules.waveTeam);
             unit.set(t.worldx() + Mathf.range(spread), t.worldy() + Mathf.range(spread));
             unit.add();
+            if(Vars.state.rules.pvp){
+                unitpvp = type.create(Team.all[8]);
+                unitpvp.set(t_pvp.worldx() + Mathf.range(spread), t.worldy() + Mathf.range(spread));
+                unitpvp.add();
+            }
         }
 
-        Call.sendMessage(String.format("[orange]<RES>[] Enemies spawned at: (%d,%d)", t.centerX(), t.centerY()));
-        Log.info(String.format("<RES> %d enemies spawned at (%d,%d)",amount, t.centerX(), t.centerY()));
+        if(!Vars.state.rules.pvp) {
+            Call.sendMessage(String.format("[orange]<RES>[] Enemies spawned at: (%d,%d)", t.centerX(), t.centerY()));
+            Log.info(String.format("<RES> %d enemies spawned at (%d,%d)", amount, t.centerX(), t.centerY()));
+        } else {
+            Call.sendMessage(String.format("[orange]<RES>[] Enemies spawned at: (%d,%d) and (%d,%d)", t.centerX(), t.centerY(), t_pvp.centerX(), t_pvp.centerY()));
+            Log.info(String.format("<RES> %d enemies spawned at (%d,%d) and (%d,%d)",amount, t.centerX(), t.centerY(), t_pvp.centerX(), t_pvp.centerY()));
+        }
 
         final int a = unitAmount;
         nextWave = Timer.schedule(()->{wI.show(DEFAULTTIME, a, ()->spawnUnits(a));}, DEFAULTBETWEENWAVES);

@@ -3,5 +3,5 @@
   "author": "Fishbuilder",
   "main": "rSpawn.randomEnemySpawn",
   "description": "Spawns enemies in a random location...",
-  "version": 0.1
+  "version": 0.2
 }
